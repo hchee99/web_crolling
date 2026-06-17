@@ -19,7 +19,7 @@ max_pages = int(input('몇 페이지까지 크롤링할까요?\n'))
 all_corpus = [] #1,2,3,...max_pages까지 크롤링 내역을 한꺼번에 저장 list
 
 #tqdm이 전체 실행시간 대비, 현재 진행 상황을 알려줌
-for page in tqdm(range(1,max_pages),desc='크롤링 진행중...'):
+for page in tqdm(range(1,max_pages+1),desc='크롤링 진행중...'):
 
     number = 3
     url = f'https://www.cheongwon.go.kr/portal/petition/open/view?pageIndex={page}'
@@ -47,7 +47,8 @@ for page in tqdm(range(1,max_pages),desc='크롤링 진행중...'):
     all_corpus.extend(corpus)
     time.sleep(2)
 
-df = pd.DataFrame(corpus, columns = ['카테고리','제목','청원내용'])
-print(df.head())
+#corpus = 말뭉치(딥러닝에서 자연어 데이터의 뭉치)
+df = pd.DataFrame(all_corpus, columns = ['카테고리','제목','청원내용'])
+print(df)
 # df.to_csv(경로)
 df.to_csv('./crawling_sample.csv',index=False, encoding = 'utf-8-sig')
