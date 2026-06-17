@@ -33,5 +33,55 @@ response = requests.get(base_url, headers=headers,
 
 #만약 response가 <200>이라면 -> 정상
 soup = BeautifulSoup(response.text,'html.parser')
-print(response.text)
+# print(response.text)
 
+# 검색 결과
+rows = []
+
+# find : 전통적인 선택 방식
+# select : 현대적인 선택 방식
+# soup.select(구분자) : '구분자"가 들어가는 모든 내용을 select(선택)
+# soup.find_all('div', class = 'item_recruit')
+for item in soup.select('div.item_recruit'):
+
+    #1. 회사명
+    #select_one(구분자) : 구분자 이름을 갖는 딱 하나만 가져와
+    corp_name = item.select_one('div.area_corp')
+
+    #2. 채용 정보
+    job_area = item.select_one('div.area_job')
+
+    #3. 공고 제목
+    #<div>로 시작하지 않음 .job_tit/div가 아니어도 괜찮아!
+    #job_tit이라는 녀석을 찾아서 one 한개만 가져와!
+    job_title = job_area.select_one('.job_tit')
+
+    #4. 조건
+    conditions = job_area.select_one('.job_condition')
+    location = ''
+    condition1 = ''
+
+    if conditions :
+        span = conditions.select('span')
+
+        if len(span) > 0:
+            location = span[0].get_text(strip = True)
+
+        if len(span) >1:
+            condition1 = span[1].get_text(strip = True)
+        
+    #5. 직무 분야
+    job_sector = job_area.select_one('.job_sector')
+    job_sector = (job_sector.get_text(strip = True) if job_sector else "")
+
+    rows.append({
+        '공고 이름' : job_title,
+        '회사 위치' : location,
+        '조건 1' : condition1,
+        '조건 2' : job_sector,
+        '회사 이름' : corp_name
+    })
+
+
+df = pd.DataFrame(rows)
+print(df)
