@@ -4,10 +4,7 @@ import pandas as pd
 import re
 from io import StringIO
 
-def download_to_csv(df):
-    buffer = StringIO()
-    df.to_csv(buffer,index = False)
-    return buffer.getvalue().encode('utf-8-sig')
+
 
 def crawling_saramin(search_text:str, except_text:str = "", region:list = None, 
                      category:list = None, career:str = "", education:str = "", max_pages:int = 1):
@@ -146,3 +143,8 @@ def crawling_work24(search_text:str, except_text:str = "", region:list = None,
     
     df = pd.DataFrame(rows)
     return df
+
+def download_to_csv(df):
+    buffer = StringIO()
+    df.to_csv(buffer,index = False)
+    return buffer.getvalue().encode('utf-8-sig')
